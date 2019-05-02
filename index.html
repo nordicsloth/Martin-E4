@@ -1,0 +1,323 @@
+
+<html>
+    <head>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">        
+        
+        <style>
+            #loginBtn, #logoutBtn, #registerBtn, #addTaskBtn
+            {
+                display: none;
+            }
+            
+            a, a:hover
+            {
+                color: white;    
+            }
+            
+        </style>
+    </head>
+    
+    <body>
+        <div class="jumbotron jumbotron-fluid mb-0">
+            <div class="container">
+                <h1 class="display-4">Todo List Tracker</h1>
+                <p class="lead">The second coolest app on the web!</p>
+            </div>
+        </div>        
+        <div class="">
+            <ul class="nav justify-content-start border p-2 bg-dark text-light">
+                <li class="nav-item">
+                    <a href="#" id='addTaskBtn' class='nav-link'>Add Task</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" id='loginBtn' class='nav-link'>Login</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" id='registerBtn' class='nav-link'>Register</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" id='logoutBtn' class='nav-link'>Logout</a>
+                </li>
+                <li class="nav-item">
+                    <span id="msg"></span>
+                </li>
+            </ul>            
+            <div>
+                <ul id='tasks' class='list-group'>
+                    
+                </ul>
+            </div>
+            <p>Task Count: <span id='count'>0</span></p>
+        </div>
+        
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>        
+        
+        <!--put your modal dialogs here...-->
+        <div id='loginDlg' class="modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header bg-dark text-light">
+                        <h5 class="modal-title">Login</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <h4>Login</h4>
+                        <form class="border border-primary p-3">
+                            <div class="form-group">
+                                <input type="text" class="form-control" id="email" name="email" placeholder="Email">
+                            </div>
+                            <div class="form-group">
+                                <input type="password" class="form-control" id="password" name="password" placeholder="Password">
+                            </div>
+                        </form> 
+                    </div>
+                    <div class="modal-footer">
+                        <button id='confirmLoginBtn' type="button" class="btn btn-primary">Login</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>    
+        
+        <div id='registerDlg' class="modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header bg-dark text-light">
+                        <h5 class="modal-title">Register</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <h4>Register</h4>
+                        <form class="border border-primary p-3">
+                            <div class="form-group">
+                                <input type="text" class="form-control" id="regEmail" name="regEmail" placeholder="Email">
+                            </div>
+                            <div class="form-group">
+                                <input type="password" class="form-control" id="regPassword" name="regPassword" placeholder="Password">
+                            </div>
+                        </form> 
+                    </div>
+                    <div class="modal-footer">
+                        <button id='confirmRegisterBtn' type="button" class="btn btn-primary">Register</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div> 
+        
+        <div id='addTaskDlg' class="modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header bg-dark text-light">
+                        <h5 class="modal-title">Add Task</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <h4>Add Task</h4>
+                        <form class="border border-primary p-3">
+                            <div class="form-group">
+                                <input type="text" class="form-control" id="taskName" name="taskName" placeholder="Task name">
+                            </div>
+                            <div class="form-group">
+                                <input type="number" class="form-control" id="taskPriority" name="taskPriority" placeholder="Priority">
+                            </div>
+                        </form> 
+                    </div>
+                    <div class="modal-footer">
+                        <button id='confirmAddTaskBtn' type="button" class="btn btn-primary">Add</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>         
+        
+        <script>
+        /* global $ */
+        $(document).ready(function() 
+        {
+            // model ....
+            let model = {};
+
+            function initializeModel()
+            {
+                model.count = 0;
+                
+                sendRequest("whoIsLoggedIn", function()
+                {
+                    if (model.error == undefined)
+                        sendRequest("listTasks");    
+                });
+            }
+            
+            // view...
+            function updateView()
+            {
+                console.log(model);
+                if (model.result == undefined)
+                {
+                    $("#msg").text(model.error);
+                    
+                    $("#logoutBtn").hide();
+                    $("#loginBtn").show();
+                    $("#registerBtn").show();
+                    $("#addTaskBtn").hide();
+                }
+                else
+                {
+                    $("#logoutBtn").show();
+                    $("#addTaskBtn").show();
+                    $("#loginBtn").hide();
+                    $("#registerBtn").hide();
+                    
+                    if (model.result.email == undefined)
+                    {
+                        $('#tasks').empty();
+                        for (let i in model.result)
+                        {
+                            let item = $("<li class='list-group-item'></li>");
+                            item.text(model.result[i].TODO_PRIORITY + ": " + model.result[i].TODO_TASK);
+                            
+                            let btn2 = $("<button class='completeBtn btn btn-primary float-right'>Complete</button>");
+                            btn2.attr("taskID", model.result[i].TODO_ID);
+                            item.append(btn2);
+
+                            let btn = $("<button class='deleteBtn btn btn-danger float-right'>Delete</button>");
+                            btn.attr("taskID", model.result[i].TODO_ID);
+                            item.append(btn);
+                            
+                            $("#tasks").append(item);
+                        }
+                    }
+                    else
+                    {
+                        $("#msg").text("Hello " + model.result.email);
+                    }
+                }
+                $("#count").text(model.count);
+            }            
+            
+            // controller ...
+            function sendRequest(url, callback)
+            {
+                var jqxhr = $.get(url);
+                jqxhr.done(function(json) 
+                {
+                    model = json;
+                    updateView();
+                    if (callback !== undefined)
+                        callback();
+                })
+                jqxhr.fail(function(json) 
+                {
+                    let error = JSON.stringify(json);
+                    model.error = error;
+                    updateView();
+                })
+            }
+
+            $('#loginBtn').click(function() 
+            {
+                $('#password').val('');
+                $('#loginDlg').modal('show');
+            });
+
+            $('#registerBtn').click(function() 
+            {
+                $('#regEmail').val('');
+                $('#regPassword').val('');
+                $('#registerDlg').modal('show');
+            });
+            
+            $(document).on( "click", ".deleteBtn", function() 
+            {
+                
+                let id = $(this).attr("taskID");
+                sendRequest("removeTask?task="+id, function ()
+                {
+                    if (model.error == undefined)
+                        sendRequest("listTasks");    
+                });
+            });
+
+            $(document).on( "click", ".completeBtn", function() 
+            {
+                let id = $(this).attr("taskID");
+                sendRequest("completeTask?task="+id, function ()
+                {
+                    if (model.error == undefined)
+                        sendRequest("listTasks");    
+                });
+                $(".completeBtn").hide("taskID");
+            });
+
+            $('#logoutBtn').click(function() 
+            {
+                sendRequest("logout", function() 
+                {
+                    if (model.error != undefined)
+                        $("#tasks").empty();
+                });
+            });
+
+            $('#addTaskBtn').click(function() 
+            {
+                $('#taskName').val('');
+                $('#addTaskDlg').modal('show');
+            });
+
+            $('#confirmAddTaskBtn').click(function() 
+            {
+                let task = $('#taskName').val().trim();
+                let priority = $('#taskPriority').val().trim();
+                model.count = model.count+1;
+                sendRequest("addTask?task="+task+"&priority="+priority, function ()
+                {
+                    if (model.error == undefined)
+                        sendRequest("listTasks");    
+                });
+                $('#addTaskDlg').modal('hide');           
+                
+                model.count == "TODO_COUNT";
+            });
+            
+            $('#confirmLoginBtn').click(function() 
+            {
+                let email = $('#email').val().trim();
+                let password = $('#password').val().trim();
+                
+                sendRequest("login?email="+email+"&password="+password, function ()
+                {
+                    if (model.error == undefined)
+                        sendRequest("listTasks");    
+                });
+                $('#loginDlg').modal('hide');
+            });
+
+            $('#confirmRegisterBtn').click(function() 
+            {
+                let email = $('#regEmail').val().trim();
+                let password = $('#regPassword').val().trim();
+                sendRequest("register?email="+email+"&password="+password, function () 
+                { 
+                    if (model.error == undefined)
+                        sendRequest("listTasks");
+                });
+                
+                $('#registerDlg').modal('hide');
+            });
+            
+            // run...
+            initializeModel();
+        });
+        
+        </script>
+    </body>
+</html>
